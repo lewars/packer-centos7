@@ -1,0 +1,11 @@
+Notes
+-----
+
+# figure out boot_command values
+## may need to use kickstart
+# make sure you're using nat instead of boot
+# move appropriate values to variables section; like [ headless, disk_size, cpu, memory ]
+# nice makefile build tool to manage packer build: see https://github.com/boxcutter/centos
+# use sha256 instead of md5
+
+
