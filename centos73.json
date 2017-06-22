@@ -1,0 +1,66 @@
+{
+    "variables": {
+	"vm_description": "TP local VM.",
+	"vm_version": "0.0.1",
+	"vm_name": "tp_cento73",
+	"install_vagrant_key": "true",
+	"ssh_username": "vagrant",
+	"ssh_password": "vagrant",
+	"vagrantfile_template": "Vagrantfile",
+	"vbox_version": "5.1.22"
+    },
+    "builders": [{
+	"boot_command": [
+            "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+	],
+	"vm_name": "{{ user `vm_name` }}",
+	"output_directory": "output-{{ user `vm_name` }}-virtualbox-iso",
+	"http_directory": ".",
+	"type": "virtualbox-iso",
+	"headless": false,
+	"guest_os_type": "RedHat_64",
+	"iso_url": "/Users/slams/git/vagrant/iso/CentOS-7-x86_64-DVD-1611.iso",
+	"iso_checksum": "871d931b7d71cf5ecededb03c76583de",
+	"iso_checksum_type": "md5",
+	"export_opts":
+	[
+	    "--manifest",
+	    "--vsys", "0",
+	    "--description", "{{user `vm_description`}}",
+	    "--version", "{{user `vm_version`}}"
+	],
+	"vboxmanage": [
+	    ["modifyvm", "{{.Name}}", "--memory", "1024"],
+	    ["modifyvm", "{{.Name}}", "--cpus", "2"]
+	],
+	"ssh_username": "{{user `ssh_username`}}",
+	"ssh_password": "{{user `ssh_password`}}",
+	"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now"
+    }],
+    "post-processors": [
+	[
+	    {
+		"type": "vagrant",
+		"keep_input_artifact": false,
+		"vagrantfile_template": "Vagrantfile",
+		"output": "centos73.box"
+	    }
+	]
+    ],
+    "provisioners": [
+    {
+	"environment_vars": [
+            "INSTALL_VAGRANT_KEY={{user `install_vagrant_key`}}",
+            "SSH_USERNAME={{user `ssh_username`}}",
+            "SSH_PASSWORD={{user `ssh_password`}}",
+	    "VBOX_VERSION={{user `vbox_version`}}"
+      ],
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "script/vagrant.sh",
+        "script/virtualbox.sh"
+      ],
+      "type": "shell"
+    }
+  ]
+}
