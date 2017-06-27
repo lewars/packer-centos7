@@ -7,7 +7,11 @@
 	"ssh_username": "vagrant",
 	"ssh_password": "vagrant",
 	"vagrantfile_template": "Vagrantfile",
-	"vbox_version": "5.1.22"
+	"vbox_version": "5.1.22",
+	"memory": "1024",
+	"cpus": "2"
+	"headless": false
+	"url": "/Users/slams/git/vagrant/iso/CentOS-7-x86_64-DVD-1611.iso"
     },
     "builders": [{
 	"boot_command": [
@@ -17,11 +21,11 @@
 	"output_directory": "output-{{ user `vm_name` }}-virtualbox-iso",
 	"http_directory": ".",
 	"type": "virtualbox-iso",
-	"headless": false,
+	"headless": {{user `headless`}},
 	"guest_os_type": "RedHat_64",
-	"iso_url": "/Users/slams/git/vagrant/iso/CentOS-7-x86_64-DVD-1611.iso",
-	"iso_checksum": "871d931b7d71cf5ecededb03c76583de",
-	"iso_checksum_type": "md5",
+	"iso_url": {{user `url`}},
+	"iso_checksum": "c455ee948e872ad2194bdddd39045b83634e8613249182b88f549bb2319d97eb",
+	"iso_checksum_type": "sha256",
 	"export_opts":
 	[
 	    "--manifest",
@@ -30,8 +34,8 @@
 	    "--version", "{{user `vm_version`}}"
 	],
 	"vboxmanage": [
-	    ["modifyvm", "{{.Name}}", "--memory", "1024"],
-	    ["modifyvm", "{{.Name}}", "--cpus", "2"]
+	    ["modifyvm", "{{.Name}}", "--memory", {{user `memory`}}],
+	    ["modifyvm", "{{.Name}}", "--cpus", {{user `cpus`}}]
 	],
 	"ssh_username": "{{user `ssh_username`}}",
 	"ssh_password": "{{user `ssh_password`}}",
